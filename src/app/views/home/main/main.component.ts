@@ -77,7 +77,7 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() { // попапы можно использовать только после того, как вся вьюха вся инициализирована
     // в OnInit может не сработать
-    this.popupComponent.open();
+    // this.popupComponent.open();
   }
 
   ngOnDestroy() {
