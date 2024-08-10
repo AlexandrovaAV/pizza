@@ -1,0 +1,33 @@
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {Observable, tap} from "rxjs";
+import {AuthService} from "./auth.service";
+
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+
+  constructor(private authService: AuthService) {
+
+  }
+
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // для исправления запроса
+    const authToken = this.authService.getToken();
+    const authReq = req.clone({
+      headers: req.headers.set('Authorization', authToken)
+    })
+
+    // для исправления и работы с ответом
+    return next.handle(authReq).pipe(
+      tap({
+        // если токен истек , можно сделать запрос на обновление токенов
+        next: (event) => {
+          if (event instanceof HttpResponse) {
+            console.log(event);
+          }
+        }
+      }),
+    );
+  }
+}
